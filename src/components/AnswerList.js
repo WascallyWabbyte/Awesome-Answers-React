@@ -2,7 +2,7 @@ import React from "react";
 import AnswerDetails from "./AnswerDetails";
 
 function AnswerList(props) {
-  const { answers = [] } = props;
+  const { answers = [], onAnswerDeleteClick = () => {} } = props;
 
   return (
     <ul>
@@ -15,6 +15,7 @@ function AnswerList(props) {
           /> */}
           <AnswerDetails
             {...answer}
+            onDeleteClick={id => onAnswerDeleteClick(id)}
             author={{ full_name: answer.author_full_name }}
           />
         </li>
