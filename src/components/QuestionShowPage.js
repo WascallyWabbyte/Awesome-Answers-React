@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import QuestionDetails from "./QuestionDetails";
 import AnswerList from "./AnswerList";
 import AnswerForm from "./AnswerForm";
-import detailedQuestion from "../data/detailedQuestion";
+import Question from "../requests/question";
 
 class QuestionShowPage extends Component {
   constructor(props) {
@@ -15,12 +15,27 @@ class QuestionShowPage extends Component {
     super(props);
 
     this.state = {
-      question: { ...detailedQuestion }
+      loading: true,
+      question: null
     };
 
     this.deleteQuestion = this.deleteQuestion.bind(this);
     this.deleteAnswer = this.deleteAnswer.bind(this);
     this.createAnswer = this.createAnswer.bind(this);
+  }
+
+  componentDidMount() {
+    // Any component rendered by <Route /> will be passed three
+    // props: history, location and match.
+    // Use match to the current URL params.
+    const questionId = this.props.match.params.id;
+
+    Question.one(questionId).then(question => {
+      this.setState({
+        question: question,
+        loading: false
+      });
+    });
   }
 
   deleteQuestion() {
@@ -52,12 +67,20 @@ class QuestionShowPage extends Component {
   }
 
   render() {
-    const { question } = this.state;
+    const { question, loading } = this.state;
+
+    if (loading) {
+      return (
+        <main className="QuestionShowPage">
+          <h2>Loading...</h2>
+        </main>
+      );
+    }
 
     if (question === null) {
       return (
         <main className="QuestionShowPage">
-          <h1>Question doesn't exist!</h1>
+          <h2>Question doesn't exist!</h2>
         </main>
       );
     }
